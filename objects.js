@@ -39,15 +39,15 @@ export class Ball {
         if (this.inPlay) {
 
             // checks collision against game border
-            if (this.x <= 0 || this.x >= canvas.width) {
+            if (this.x - this.radius <= 0 || this.x + this.radius >= canvas.width) {
                 playAudio("./audio/bounce.flac");
                 this.dX = this.dX * -1;
             }
-            if (this.y <= 0) {
+            if (this.y - this.radius <= 0) {
                 playAudio("./audio/bounce.flac");
                 this.dY = this.dY * -1;
             }
-            else if (this.y >= canvas.height) {
+            else if (this.y + this.radius >= canvas.height) {
                 playAudio("./audio/fail.wav");
                 this.outOfBounds = true;
                 this.inPlay = false;
@@ -60,10 +60,10 @@ export class Ball {
                 if (c instanceof Brick && c.state === 0) continue;
 
                 //collision from left and right
-                if (this.x + this.dX < c.x + c.width &&
-                    this.x + this.dX > c.x &&
-                    this.y < c.y + c.height &&
-                    this.y > c.y) {
+                if (this.x - this.radius + this.dX < c.x + c.width &&
+                    this.x + this.radius + this.dX > c.x &&
+                    this.y - this.radius < c.y + c.height &&
+                    this.y + this.radius > c.y) {
 
                     if (c instanceof Brick) {
                         playAudio("./audio/glass_hit.mp3");
@@ -74,10 +74,10 @@ export class Ball {
                     this.dX = this.dX * -1;
                 }
                 //collision from top and bottom
-                if (this.x < c.x + c.width &&
-                    this.x > c.x &&
-                    this.y + this.dY < c.y + c.height &&
-                    this.y + this.dY > c.y) {
+                if (this.x - this.radius < c.x + c.width &&
+                    this.x + this.radius > c.x &&
+                    this.y - this.radius + this.dY < c.y + c.height &&
+                    this.y + this.radius + this.dY > c.y) {
 
                     if (c instanceof Brick) {
                         playAudio("./audio/glass_hit.mp3");
