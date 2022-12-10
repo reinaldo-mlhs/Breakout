@@ -208,13 +208,23 @@ export class Paddle extends Collider {
         this.width = width;
         this.height = height;
         this.speed = speed;
+        
         document.addEventListener("mousemove", this.onMove.bind(this, canvas));
+        document.addEventListener("touchmove", this.onMoveTouch.bind(this, canvas));
     }
 
     onMove(canvas, evt) {
         if (canvas && evt) {
             var rect = canvas.getBoundingClientRect();
             this.x = (evt.clientX - rect.left) / (rect.right - rect.left) * canvas.width - (this.width / 2);
+            this.x = Math.max(0, Math.min(this.x, (canvas.width - this.width)));
+        }
+    }
+
+    onMoveTouch(canvas, evt) {
+        if (canvas && evt) {
+            var rect = canvas.getBoundingClientRect();
+            this.x = (evt.changedTouches[0].clientX - rect.left) / (rect.right - rect.left) * canvas.width - (this.width / 2);
             this.x = Math.max(0, Math.min(this.x, (canvas.width - this.width)));
         }
     }
