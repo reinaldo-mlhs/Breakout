@@ -80,7 +80,7 @@ export class Breakout {
         if (this.lost === false) {
             if (this.lives === 0) {
                 this.lost = true;
-                playAudio("./audio/gameover_fail.wav");
+                playAudio("./assets/audio/gameover_fail.wav");
                 setTimeout(() => {
                     this.start();
                 }, 5000);
@@ -101,7 +101,7 @@ export class Breakout {
             this.won = true;
             this.ball.dX = 0;
             this.ball.dY = 0;
-            playAudio("./audio/gameover_win.wav");
+            playAudio("./assets/audio/gameover_win.wav");
             setTimeout(() => {
                 this.start(this.level + 1);
             }, 5000);

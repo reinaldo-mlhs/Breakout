@@ -38,17 +38,17 @@ export class Ball {
 
         if (this.inPlay) {
 
-            // checks collision against game border
+            // checks collision against game borders
             if (this.x - this.radius <= 0 || this.x + this.radius >= canvas.width) {
-                playAudio("./audio/bounce.flac");
+                playAudio("./assets/audio/bounce.flac");
                 this.dX = this.dX * -1;
             }
             if (this.y - this.radius <= 0) {
-                playAudio("./audio/bounce.flac");
+                playAudio("./assets/audio/bounce.flac");
                 this.dY = this.dY * -1;
             }
             else if (this.y + this.radius >= canvas.height) {
-                playAudio("./audio/fail.wav");
+                playAudio("./assets/audio/fail.wav");
                 this.outOfBounds = true;
                 this.inPlay = false;
             }
@@ -66,7 +66,7 @@ export class Ball {
                     this.y + this.radius > c.y) {
 
                     if (c instanceof Brick) {
-                        playAudio("./audio/glass_hit.mp3");
+                        playAudio("./assets/audio/glass_hit.mp3");
                         c.state = 0;
                         c.powerUpDrop();
                         this.scored = 10;
@@ -80,14 +80,14 @@ export class Ball {
                     this.y + this.radius + this.dY > c.y) {
 
                     if (c instanceof Brick) {
-                        playAudio("./audio/glass_hit.mp3");
+                        playAudio("./assets/audio/glass_hit.mp3");
                         c.state = 0;
                         c.powerUpDrop();
                         this.scored = 10;
                     }
                     else if (c instanceof Paddle) {
                         // console.log(this.dX, this.dY);
-                        playAudio("./audio/bounce.flac");
+                        playAudio("./assets/audio/bounce.flac");
                         const paddleXReflexThreshold = c.width / 3;
                         if (this.x + this.dX < c.x + paddleXReflexThreshold) {
                             if (this.dX > 0) {
@@ -169,7 +169,7 @@ export class PowerUp {
 
     doPowerUp() {
         console.log("pwer up");
-        playAudio("./audio/score.wav");
+        playAudio("./assets/audio/score.wav");
         this.inPlay = false;
         return 50;
     }
