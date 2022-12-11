@@ -7,13 +7,14 @@ function playAudio(url) {
 }
 
 export class Breakout {
-    constructor(canvas) {
+    constructor(canvas, isMobileDevice = false) {
         this.won = false;
         this.lost = false;
         this.score = 0;
         this.lives = 3;
         this.level = 1;
         this.numberOfLevels = 2;
+        this.isMobileDevice = false;
 
         this.canvas = canvas;
 
@@ -25,11 +26,11 @@ export class Breakout {
     buildBricks() {
         this.bricks = null;
 
-        const brickHeight = 20;
-        const brickWidth = 40;
-        const paddingH = 20;
+        const brickWidth = this.isMobileDevice ? window.innerWidth / 22 : 40;
+        const brickHeight = brickWidth / 2;
+        const paddingH = 50;
         const paddingV = 50;
-        const rowGap = 20;
+        const rowGap = brickHeight;
         
         if (this.level === 1) {
             const nBricksPerRow = Math.floor((this.canvas.width - (paddingH * 2)) / brickWidth);
@@ -69,7 +70,7 @@ export class Breakout {
         this.ball = null;
         Collider.allInstances = [this.paddle];
 
-        this.ball = new Ball();
+        this.ball = new Ball(this.canvas.width / 2, this.canvas.height / 2);
 
         this.buildBricks();
     }
@@ -87,7 +88,7 @@ export class Breakout {
             }
             else {
                 this.ball = null;
-                this.ball = new Ball();
+                this.ball = new Ball(this.canvas.width / 2, this.canvas.height / 2);
             }
         }
     }

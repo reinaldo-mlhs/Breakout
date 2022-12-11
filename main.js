@@ -7,10 +7,23 @@ font.load().then((f) => {
     document.fonts.add(f);
 });
 
+let isMobileDevice = false;
+
+if ("maxTouchPoints" in navigator) {
+    isMobileDevice = navigator.maxTouchPoints > 0;
+} 
+
+if (isMobileDevice) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+else {
+    canvas.width = 600;
+    canvas.height = 600;
+    canvas.style.border = "1px solid white";
+    document.getElementById("canvas-container").style.marginTop = "10px";
+}
 canvas.id = "breakout-canvas";
-canvas.width = 600;
-canvas.height = 600;
-canvas.style.border = "1px solid white";
 
 document.getElementById("canvas-container").appendChild(canvas);
 

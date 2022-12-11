@@ -21,7 +21,7 @@ export class Collider {
 }
 export class Ball {
 
-    constructor(x = 300, y = 300, dX = 2, dY = 3) {
+    constructor(x, y, dX = 2, dY = 3) {
         this.x = x;
         this.y = y;
         this.dX = dX;

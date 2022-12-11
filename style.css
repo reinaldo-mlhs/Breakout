@@ -1,7 +1,11 @@
-body {
+html, body {
     font-family: 'DotGothic16', sans-serif;
-}
-
-#debug {
-    color: white;
-}
+    width:  100%;
+    height: 100%;
+    margin: 0;
+    border: 0;
+    overflow: hidden;
+    /*  Disable scrollbars */
+    display: block;
+    /* No floating content on sides */
+  }
