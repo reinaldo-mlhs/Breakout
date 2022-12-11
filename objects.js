@@ -220,6 +220,8 @@ export class Paddle extends Collider {
     }
 
     onMoveTouch(canvas, evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
         if (canvas && evt) {
             var rect = canvas.getBoundingClientRect();
             this.x = (evt.changedTouches[0].clientX - rect.left) / (rect.right - rect.left) * canvas.width - (this.width / 2);
