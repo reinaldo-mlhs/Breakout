@@ -29,7 +29,14 @@ export class Ball {
         this.outOfBounds = false;
         this.inPlay = false;
         this.scored = 0;
-        document.addEventListener("mouseup", () => this.inPlay = true);
+
+        // document.addEventListener("mouseup", () => this.inPlay = true);
+        document.addEventListener("touchstart", this.setInPlay.bind(this));
+    }
+
+    setInPlay(evt) {
+        evt.preventDefault();
+        this.inPlay = true;
     }
 
     render(canvas) {
@@ -207,7 +214,7 @@ export class Paddle extends Collider {
         this.height = height;
         this.speed = speed;
         
-        document.addEventListener("mousemove", this.onMove.bind(this, canvas));
+        // document.addEventListener("mousemove", this.onMove.bind(this, canvas));
         document.addEventListener("touchmove", this.onMoveTouch.bind(this, canvas));
     }
 
