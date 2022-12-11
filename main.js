@@ -41,6 +41,7 @@ document.getElementById("canvas-container").appendChild(canvas);
 
 const breakout = new Breakout(canvas);
 breakout.start();
+console.log(breakout);
 
 function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
