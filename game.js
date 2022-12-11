@@ -21,8 +21,8 @@ export class Breakout {
         this.paddle = new Paddle(canvas);
         this.bricks = null;
 
-        canvas.addEventListener("touchstart", this.setInPlay.bind(this));
-        canvas.addEventListener("touchmove", this.paddle.onMoveTouch.bind(this.paddle, canvas));
+        // canvas.addEventListener("touchstart", this.setInPlay.bind(this));
+        // canvas.addEventListener("touchmove", this.paddle.onMoveTouch.bind(this.paddle, canvas));
     }
 
     setInPlay(evt) {
