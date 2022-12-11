@@ -1,10 +1,8 @@
 console.log("game file loaded");
 
 import { Ball, Paddle, Brick, Collider, PowerUp } from "./objects.js";
+import { playAudio, setCanvasFontSize } from "./util.js";
 
-function playAudio(url) {
-    new Audio(url).play();
-}
 
 export class Breakout {
     constructor(canvas, isMobileDevice = false) {
@@ -113,22 +111,22 @@ export class Breakout {
     drawUI() {
         const ctx = this.canvas.getContext('2d');
         //score ui
-        ctx.font = "20px DotGothic16";
+        setCanvasFontSize(ctx, "20px");
         ctx.fillStyle = "white";
         ctx.fillText(this.lives, 50, 30);
         //lives ui
-        ctx.font = "20px DotGothic16";
+        setCanvasFontSize(ctx, "20px");
         ctx.fillStyle = "white";
         ctx.fillText(this.score, this.canvas.width - 50, 30);
         //win ui
         if (this.won) {
-            ctx.font = "50px DotGothic16";
+            setCanvasFontSize(ctx, "50px");
             ctx.fillStyle = "white";
             ctx.textAlign = 'center';
             ctx.fillText("YOU WON", this.canvas.width / 2, this.canvas.height / 2);
         }
         else if (this.lost) {
-            ctx.font = "50px DotGothic16";
+            setCanvasFontSize(ctx, "50px");
             ctx.fillStyle = "white";
             ctx.textAlign = 'center';
             ctx.fillText("YOU LOST", this.canvas.width / 2, this.canvas.height / 2);

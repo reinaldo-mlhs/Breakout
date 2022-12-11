@@ -1,8 +1,6 @@
 console.log("objects file loaded");
+import { setCanvasFontSize, playAudio } from "./util.js";
 
-function playAudio(url) {
-    new Audio(url).play();
-}
 
 export class Collider {
     constructor(x, y, width, height) {
@@ -270,7 +268,7 @@ function drawBrick(ctx, x, y, w, h, color) {
 };
 
 function drawScorePowerUp(ctx, score, x, y) {
-    ctx.font = "15px DotGothic16";
+    setCanvasFontSize(ctx, "15px");
     ctx.fillStyle = "yellow";
     ctx.textAlign = 'center';
     ctx.fillText(score, x, y);
