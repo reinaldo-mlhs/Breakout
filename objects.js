@@ -19,7 +19,7 @@ export class Collider {
 }
 export class Ball {
 
-    constructor(x, y, dX = 2, dY = 3) {
+    constructor(x, y, dX = 2, dY = 4) {
         this.x = x;
         this.y = y;
         this.dX = dX;

@@ -118,6 +118,11 @@ export class Breakout {
         setCanvasFontSize(ctx, "20px");
         ctx.fillStyle = "white";
         ctx.fillText(this.score, this.canvas.width - 50, 30);
+        //level ui
+        setCanvasFontSize(ctx, "20px");
+        ctx.fillStyle = "white";
+        ctx.textAlign = 'center';
+        ctx.fillText("Level: " + this.level, this.canvas.width / 2, 30);
         //win ui
         if (this.won) {
             setCanvasFontSize(ctx, "50px");
