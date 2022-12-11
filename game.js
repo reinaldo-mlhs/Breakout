@@ -13,12 +13,21 @@ export class Breakout {
         this.level = 1;
         this.numberOfLevels = 2;
         this.isMobileDevice = false;
+        this.inPlay = false;
 
         this.canvas = canvas;
 
         this.ball = null;
         this.paddle = new Paddle(canvas);
         this.bricks = null;
+
+        canvas.addEventListener("touchstart", this.setInPlay.bind(this));
+        canvas.addEventListener("touchmove", this.paddle.onMoveTouch.bind(this.paddle, canvas));
+    }
+
+    setInPlay(evt) {
+        evt.preventDefault();
+        this.inPlay = true;
     }
 
     buildBricks() {
@@ -79,12 +88,15 @@ export class Breakout {
         if (this.lost === false) {
             if (this.lives === 0) {
                 this.lost = true;
+                this.inPlay = false;
+                this.ball = null;
                 playAudio("./assets/audio/gameover_fail.wav");
                 setTimeout(() => {
                     this.start();
                 }, 5000);
             }
             else {
+                this.inPlay = false;
                 this.ball = null;
                 this.ball = new Ball(this.canvas.width / 2, this.canvas.height / 2);
             }
@@ -140,17 +152,17 @@ export class Breakout {
 
     tick() {
 
-        if (this.ball.outOfBounds) {
+        if (this.ball?.outOfBounds) {
             this.checkLost();
         }
 
-        if (this.ball.scored > 0) {
+        if (this.ball?.scored > 0) {
             this.score = this.score + this.ball.scored;
             this.ball.scored = 0;
             this.checkWin();
         }
 
-        this.ball.render(this.canvas);
+        this.ball?.render(this.canvas, this.inPlay);
         this.paddle.render(this.canvas);
 
         this.bricks.forEach(brickRow => {

@@ -27,21 +27,12 @@ export class Ball {
 
         this.radius = 5;
         this.outOfBounds = false;
-        this.inPlay = false;
         this.scored = 0;
-
-        // document.addEventListener("mouseup", () => this.inPlay = true);
-        document.addEventListener("touchstart", this.setInPlay.bind(this));
     }
 
-    setInPlay(evt) {
-        evt.preventDefault();
-        this.inPlay = true;
-    }
+    render(canvas, inPlay) {
 
-    render(canvas) {
-
-        if (this.inPlay) {
+        if (inPlay) {
 
             // checks collision against game borders
             if (this.x - this.radius <= 0 || this.x + this.radius >= canvas.width) {
@@ -55,7 +46,6 @@ export class Ball {
             else if (this.y + this.radius >= canvas.height) {
                 playAudio("./assets/audio/fail.wav");
                 this.outOfBounds = true;
-                this.inPlay = false;
             }
 
 
@@ -213,9 +203,6 @@ export class Paddle extends Collider {
         this.width = width;
         this.height = height;
         this.speed = speed;
-        
-        // document.addEventListener("mousemove", this.onMove.bind(this, canvas));
-        document.addEventListener("touchmove", this.onMoveTouch.bind(this, canvas));
     }
 
     onMove(canvas, evt) {
