@@ -3,9 +3,9 @@
     "name": "Breakout By Reinaldo M.",
     "icons": [
       {
-        "src": "/assets/favicon.png",
+        "src": "/assets/icon.png",
         "type": "image/png",
-        "sizes": "32x32"
+        "sizes": "200x200"
       }
     ],
     "id": "/?source=pwa",
