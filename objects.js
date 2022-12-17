@@ -28,6 +28,8 @@ export class Ball {
         this.radius = 5;
         this.outOfBounds = false;
         this.scored = 0;
+
+        this.passThrough = false;
     }
 
     render(canvas, inPlay) {
@@ -65,8 +67,14 @@ export class Ball {
                         c.state = 0;
                         c.powerUpDrop();
                         this.scored = 10;
+                        if (!this.passThrough) {
+                            this.dX = this.dX * -1;
+                        }
                     }
-                    this.dX = this.dX * -1;
+                    else {
+                        this.dX = this.dX * -1;
+                    }
+                    
                 }
                 //collision from top and bottom
                 if (this.x - this.radius < c.x + c.width &&
@@ -79,29 +87,56 @@ export class Ball {
                         c.state = 0;
                         c.powerUpDrop();
                         this.scored = 10;
+                        if (!this.passThrough) {
+                            this.dY = this.dY * -1;
+                        }
                     }
                     else if (c instanceof Paddle) {
                         // console.log(this.dX, this.dY);
                         playAudio("./assets/audio/bounce.flac");
-                        const paddleXReflexThreshold = c.width / 3;
+                        const paddleXReflexThreshold = c.width / 7;
+                        // -------
+                        // -|-|---|-|-
+
+                        // (-)|-|---|-|-
                         if (this.x + this.dX < c.x + paddleXReflexThreshold) {
+                            if (this.dX > 0) {
+                                this.dX = -2;
+                            }
+                            else {
+                                this.dX = -2.5;
+                            }
+                        }
+                        // -|(-)|---|-|-
+                        else if (this.x + this.dX < c.x + paddleXReflexThreshold * 2) {
                             if (this.dX > 0) {
                                 this.dX = -1;
                             }
                             else {
-                                this.dX = this.dX - 0.5;
+                                this.dX = -1.5;
                             }
                         }
-                        else if (this.x + this.dX > c.x + c.width - paddleXReflexThreshold) {
+                        // -|-|---|(-)|-
+                        else if (this.x + this.dX > c.x + c.width - paddleXReflexThreshold * 2) {
                             if (this.dX < 0) {
                                 this.dX = 1;
                             }
                             else {
-                                this.dX = this.dX + 0.5;
+                                this.dX = 1.5;
                             }
                         }
+                        // -|-|---|-|(-)
+                        else if (this.x + this.dX > c.x + c.width - paddleXReflexThreshold) {
+                            if (this.dX < 0) {
+                                this.dX = 2;
+                            }
+                            else {
+                                this.dX = 2.5;
+                            }
+                        }
+                        this.dY = this.dY * -1;
                     };
-                    this.dY = this.dY * -1;
+                    
                 }
             }
 
@@ -112,7 +147,8 @@ export class Ball {
 
         }
         
-        drawBall(canvas.getContext('2d'), this.x, this.y, this.radius);
+        const color = this.passThrough ? "yellow" : "white";
+        drawBall(canvas.getContext('2d'), this.x, this.y, this.radius, color);
     }
 }
 export class Brick extends Collider {
@@ -128,7 +164,8 @@ export class Brick extends Collider {
 
     powerUpDrop() {
         const r = Math.random();
-        if (r > 0.6) {
+        // 35% chance of spawning power up
+        if (r > 0.65) {
             if (PowerUp.allInstances) {
                 PowerUp.allInstances.push(new PowerUp(this.x + (this.width / 2), this.y));
             }
@@ -151,7 +188,11 @@ export class PowerUp {
 
         this.inPlay = 1;
 
-        this.powerUps = ["score", "score", "score"];
+        this.powerUps = [
+            "paddle_width_increase", "paddle_width_increase", "paddle_width_increase", "paddle_width_increase", "paddle_width_increase", "paddle_width_increase",
+            "ball_pass_through", "ball_pass_through", "ball_pass_through", 
+            "extra_life"
+        ];
         this.powerUp = this.powerUps[Math.floor(Math.random() * this.powerUps.length)];
 
         if (PowerUp.allInstances === undefined) {
@@ -160,13 +201,6 @@ export class PowerUp {
         else {
             PowerUp.allInstances.push(this);
         }
-    }
-
-    doPowerUp() {
-        console.log("pwer up");
-        playAudio("./assets/audio/score.wav");
-        this.inPlay = false;
-        return 50;
     }
 
     render(canvas, paddle) {
@@ -181,7 +215,17 @@ export class PowerUp {
             drawScorePowerUp(canvas.getContext('2d'), 50, this.x, this.y);
         }
         else {
-            drawPowerUp(canvas.getContext('2d'), this.x, this.y, 30, 10, "rgb(63, 72, 204)");
+            let color = "rgb(63, 72, 204)";
+            if (this.powerUp === "paddle_width_increase") {
+                color = "rgb(63, 72, 204)";
+            }
+            else if (this.powerUp === "ball_pass_through") {
+                color = "yellow";
+            }
+            else if (this.powerUp === "extra_life") {
+                color = "red";
+            }
+            drawPowerUp(canvas.getContext('2d'), this.x, this.y, 30, 10, color);
         }
 
         if (this.inPlay) {
@@ -189,10 +233,10 @@ export class PowerUp {
                 this.x > paddle.x &&
                 this.y + this.dY < paddle.y + paddle.height &&
                 this.y + this.dY > paddle.y) { 
-                    return this.doPowerUp();
+                    return true;
             }
         }
-        return null;
+        return false;
     }
 }
 export class Paddle extends Collider {
@@ -287,8 +331,8 @@ function drawPowerUp(ctx, x, y, w, h, color) {
     ctx.stroke();
 };
 
-function drawBall(ctx, x, y, r) {
-    ctx.fillStyle = "rgb(255,255,255)";
+function drawBall(ctx, x, y, r, color) {
+    ctx.fillStyle = color;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, 2 * Math.PI);
     ctx.closePath();

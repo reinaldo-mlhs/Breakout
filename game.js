@@ -21,8 +21,15 @@ export class Breakout {
         this.paddle = new Paddle(canvas);
         this.bricks = null;
 
-        // canvas.addEventListener("touchstart", this.setInPlay.bind(this));
-        // canvas.addEventListener("touchmove", this.paddle.onMoveTouch.bind(this.paddle, canvas));
+        if (this.isMobileDevice) {
+            canvas.addEventListener("touchstart", this.setInPlay.bind(this));
+            canvas.addEventListener("touchmove", this.paddle.onMoveTouch.bind(this.paddle, canvas));
+        }
+        else {
+            canvas.addEventListener("mouseup", this.setInPlay.bind(this));
+            canvas.addEventListener("mousemove", this.paddle.onMove.bind(this.paddle, canvas));
+        }
+        
     }
 
     setInPlay(evt) {
@@ -67,7 +74,7 @@ export class Breakout {
         this.won = false;
         this.lost = false;
         this.score = 0;
-        this.lives = 3;
+        this.lives = level === 1 ? 3 : this.lives;
 
         this.level = 1;
         if (level <= this.numberOfLevels) {
@@ -86,18 +93,19 @@ export class Breakout {
         this.lives = Math.max(0, Math.min(this.lives - 1, 10));
 
         if (this.lost === false) {
+            
+            PowerUp.allInstances = undefined;
+            this.inPlay = false;
+            this.ball = null;
+
             if (this.lives === 0) {
                 this.lost = true;
-                this.inPlay = false;
-                this.ball = null;
                 playAudio("./assets/audio/gameover_fail.wav");
                 setTimeout(() => {
                     this.start();
                 }, 5000);
             }
             else {
-                this.inPlay = false;
-                this.ball = null;
                 this.ball = new Ball(this.canvas.width / 2, this.canvas.height / 2);
             }
         }
@@ -110,14 +118,36 @@ export class Breakout {
 
         if (won) {
             this.won = true;
-            this.ball.dX = 0;
-            this.ball.dY = 0;
+            PowerUp.allInstances = undefined;
+            this.inPlay = false;
+            this.ball = null;
             playAudio("./assets/audio/gameover_win.wav");
             setTimeout(() => {
                 this.start(this.level + 1);
             }, 5000);
         }
 
+    }
+
+    doPowerUp(powerUpInstance) {
+        console.log("pwer up");
+        playAudio("./assets/audio/score.wav");
+        powerUpInstance.inPlay = false;
+
+        if (powerUpInstance.powerUp === "score") {
+            this.score = this.score + 50;
+        }
+        else if (powerUpInstance.powerUp === "paddle_width_increase") {
+            this.paddle.width = this.paddle.width + 30;
+            setTimeout(() => this.paddle.width = this.paddle.width - 30, 5000);
+        }
+        else if (powerUpInstance.powerUp === "ball_pass_through") {
+            this.ball.passThrough = true;
+            setTimeout(() => this.ball.passThrough = false, 2000);
+        }
+        else if (powerUpInstance.powerUp === "extra_life") {
+            this.lives = this.lives + 1;
+        }
     }
 
     drawUI() {
@@ -175,8 +205,8 @@ export class Breakout {
                 PowerUp.allInstances.splice(index, 1);
             }
             else {
-                const score = pwr.render(this.canvas, this.paddle);
-                this.score = this.score + score;
+                const caughtByPaddle = pwr.render(this.canvas, this.paddle);
+                if (caughtByPaddle) this.doPowerUp(pwr);
             }
         });
 
