@@ -164,8 +164,8 @@ export class Brick extends Collider {
 
     powerUpDrop() {
         const r = Math.random();
-        // 35% chance of spawning power up
-        if (r > 0.65) {
+        // 15% chance of spawning power up
+        if (r > 0.85) {
             if (PowerUp.allInstances) {
                 PowerUp.allInstances.push(new PowerUp(this.x + (this.width / 2), this.y));
             }
