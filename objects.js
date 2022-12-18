@@ -215,17 +215,15 @@ export class PowerUp {
             drawScorePowerUp(canvas.getContext('2d'), 50, this.x, this.y);
         }
         else {
-            let color = "rgb(63, 72, 204)";
             if (this.powerUp === "paddle_width_increase") {
-                color = "rgb(63, 72, 204)";
+                drawPowerUp(canvas.getContext('2d'), this.x, this.y, 30, 10, "rgb(63, 72, 204)");
             }
             else if (this.powerUp === "ball_pass_through") {
-                color = "yellow";
+                drawPowerUp(canvas.getContext('2d'), this.x, this.y, 30, 10, "yellow");
             }
             else if (this.powerUp === "extra_life") {
-                color = "red";
+                drawHeart(canvas.getContext('2d'), this.x, this.y);
             }
-            drawPowerUp(canvas.getContext('2d'), this.x, this.y, 30, 10, color);
         }
 
         if (this.inPlay) {
@@ -338,3 +336,70 @@ function drawBall(ctx, x, y, r, color) {
     ctx.closePath();
     ctx.fill();
 };
+
+
+function drawHeart(ctx, fromx, fromy) {
+
+    var x = fromx;
+    var y = fromy;
+    var width = 20;
+    var height = 20;
+  
+    ctx.save();
+    ctx.beginPath();
+    var topCurveHeight = height * 0.3;
+    ctx.moveTo(x, y + topCurveHeight);
+    // top left curve
+    ctx.bezierCurveTo(
+      x, y, 
+      x - width / 2, y, 
+      x - width / 2, y + topCurveHeight
+    );
+  
+    // bottom left curve
+    ctx.lineTo(x, y + height)
+  
+    // bottom right curve
+    ctx.lineTo(x + width / 2, y + topCurveHeight)
+  
+    // top right curve
+    ctx.bezierCurveTo(
+      x + width / 2, y, 
+      x, y, 
+      x, y + topCurveHeight
+    );
+  
+    ctx.closePath();
+    ctx.fillStyle = "red";
+    ctx.fill();
+
+    ctx.beginPath();
+    var topCurveHeight = height * 0.3;
+    ctx.moveTo(x, y + topCurveHeight);
+    // top left curve
+    ctx.bezierCurveTo(
+      x, y, 
+      x - width / 2, y, 
+      x - width / 2, y + topCurveHeight
+    );
+  
+    // bottom left curve
+    ctx.lineTo(x, y + height)
+  
+    // bottom right curve
+    ctx.lineTo(x + width / 2, y + topCurveHeight)
+  
+    // top right curve
+    ctx.bezierCurveTo(
+      x + width / 2, y, 
+      x, y, 
+      x, y + topCurveHeight
+    );
+  
+    ctx.closePath();
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 1
+    ctx.stroke();
+
+    ctx.restore();
+}
