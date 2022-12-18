@@ -21,6 +21,8 @@ export class Breakout {
         this.paddle = new Paddle(canvas);
         this.bricks = null;
 
+        document.addEventListener("keydown", this.keyboardEvents.bind(this));
+
         if (this.isMobileDevice) {
             canvas.addEventListener("touchstart", this.setInPlay.bind(this));
             canvas.addEventListener("touchmove", this.paddle.onMoveTouch.bind(this.paddle, canvas));
@@ -32,6 +34,12 @@ export class Breakout {
         
     }
 
+    keyboardEvents(evt) {
+        if (evt.code === "Space") {
+            this.inPlay = !this.inPlay;
+        }
+    }
+
     setInPlay(evt) {
         evt.preventDefault();
         this.inPlay = true;
@@ -40,31 +48,99 @@ export class Breakout {
     buildBricks() {
         this.bricks = null;
 
-        const brickWidth = this.isMobileDevice ? window.innerWidth / 22 : 40;
+        const brickWidth = 40;
         const brickHeight = brickWidth / 2;
-        const paddingH = 50;
+        const paddingH = 60;
         const paddingV = 50;
         const rowGap = brickHeight;
-        
-        if (this.level === 1) {
-            const nBricksPerRow = Math.floor((this.canvas.width - (paddingH * 2)) / brickWidth);
-            const brickCenterGapIndex = nBricksPerRow / 2;
-            const rows = ["rgb(253, 21, 27)", "rgb(255, 179, 15)", "rgb(132, 147, 36)", "rgb(67, 127, 151)", "rgb(1, 41, 95)"];
+        const colors = ["rgb(253, 21, 27)", "rgb(255, 179, 15)", "rgb(132, 147, 36)", "rgb(67, 127, 151)", "rgb(1, 41, 95)", "rgb(255, 179, 15)", "rgb(132, 147, 36)", "rgb(67, 127, 151)"];
+        // const colors = ["#FF6B35","#F7C59F","#EFEFD0","#004E89","#1A659E"];
+        // const colors = ["#FF4800","#FF5400","#FF6000","#FF6D00","#FF7900","#FF8500","#FF9100","#FF9E00","#FFAA00","#FFB600"];
+        // const colors = ["#B76935","#A56336","#935E38","#815839","#6F523B","#5C4D3C","#4A473E","#38413F","#263C41","#143642"];
 
-            this.bricks = Array.from({ length: rows.length }, (_, iOut) => {
-                return Array.from({ length: nBricksPerRow - 2 }, (_, i) => {
-                    const tempIndex = i + 1 >= brickCenterGapIndex ? i + 2 : i;
-                    return new Brick(paddingH + (tempIndex * brickWidth), paddingV + (rowGap * iOut), brickWidth, brickHeight, rows[iOut])
+        function buildBricksFromPattern(pattern, colors) {
+            const temp = [];
+            pattern.forEach((rowPattern, outerIndex) => {
+                temp.push([]);
+                rowPattern.forEach((brk, index) => {
+                    if (brk === "1") {
+                        temp[outerIndex].push(new Brick(paddingH + (index * brickWidth), paddingV + (rowGap * outerIndex), brickWidth, brickHeight, colors[outerIndex]));
+                    }
                 });
             });
+
+            return temp;
+        }
+        
+        if (this.level === 1) {
+            const pattern = [
+                ["1","1","1","0","0","1","1","0","0","1","1","1"],
+                ["1","1","0","0","1","1","1","1","0","0","1","1"],
+                ["1","0","0","1","1","1","1","1","1","0","0","1"],
+                ["0","0","1","1","1","1","1","1","1","1","0","0"],
+                ["0","1","1","1","0","0","0","0","1","1","1","0"],
+                ["1","1","1","0","0","1","1","0","0","1","1","1"],
+                ["1","1","0","0","1","1","1","1","0","0","1","1"],
+                ["1","1","1","0","0","1","1","0","0","1","1","1"],
+                ["0","1","1","1","0","0","0","0","1","1","1","0"],
+                ["0","0","1","1","1","1","1","1","1","1","0","0"],
+                ["1","0","0","1","1","1","1","1","1","0","0","1"],
+                ["1","1","0","0","1","1","1","1","0","0","1","1"],
+                ["1","1","1","0","0","1","1","0","0","1","1","1"],
+            ]
+            // const pattern = [
+            //     ["1","1","1","1","1","1","1","1","1","1","1","1"],
+            //     ["0","0","0","0","0","0","0","0","0","0","0","0"],
+            //     ["1","1","1","1","1","1","1","1","1","1","1","1"],
+            //     ["0","0","0","0","0","0","0","0","0","0","0","0"],
+            //     ["1","1","1","1","1","1","1","1","1","1","1","1"],
+            //     ["0","0","0","0","0","0","0","0","0","0","0","0"],
+            //     ["1","1","1","1","1","1","1","1","1","1","1","1"],
+            // ]
+            this.bricks = buildBricksFromPattern(pattern, colors);
         }
         else if (this.level === 2) {
-            const nBricksPerRow = Math.floor((this.canvas.width - (paddingH * 2)) / brickWidth);
-            const rows = ["rgb(253, 21, 27)", "rgb(255, 179, 15)", "rgb(132, 147, 36)", "rgb(67, 127, 151)", "rgb(1, 41, 95)"];
-
-            this.bricks = Array.from({ length: rows.length }, (_, iOut) => {
-                return Array.from({ length: nBricksPerRow }, (_, i) => new Brick(paddingH + (i * brickWidth), paddingV + (rowGap * iOut), brickWidth, brickHeight, rows[iOut]));
-            });
+            const pattern = [
+                ["1","1","0","1","1","0","0","1","1","0","1","1"],
+                ["1","1","0","1","1","0","0","1","1","0","1","1"],
+                ["1","1","0","1","1","0","0","1","1","0","1","1"],
+                ["1","1","0","1","1","0","0","1","1","0","1","1"],
+                ["1","1","0","1","1","0","0","1","1","0","1","1"],
+                ["1","1","0","1","1","0","0","1","1","0","1","1"],
+                ["1","1","0","1","1","0","0","1","1","0","1","1"],
+            ]
+            this.bricks = buildBricksFromPattern(pattern, colors);
+        }
+        else if (this.level === 3) {
+            const pattern = [
+                ["0","0","1","0","0","0","0","0","0","1","0","0"],
+                ["0","1","1","1","0","0","0","0","1","1","1","0"],
+                ["1","1","1","1","1","0","0","1","1","1","1","1"],
+                ["0","1","1","1","0","0","0","0","1","1","1","0"],
+                ["0","0","1","0","0","0","0","0","0","1","0","0"],
+                ["0","0","0","0","0","1","1","0","0","0","0","0"],
+                ["0","0","0","0","1","1","1","1","0","0","0","0"],
+                ["0","0","0","0","0","1","1","0","0","0","0","0"],
+            ]
+            this.bricks = buildBricksFromPattern(pattern, colors);
+        }
+        else if (this.level === 4) {
+            const pattern = [
+                ["0","0","1","0","1","0","1","0","1","0","1","0"],
+                ["0","0","0","0","0","0","0","0","0","0","0","0"],
+                ["0","1","0","1","0","1","0","1","0","1","0","1"],
+                ["0","0","0","0","0","0","0","0","0","0","0","0"],
+                ["0","0","1","0","1","0","1","0","1","0","1","0"],
+                ["0","0","0","0","0","0","0","0","0","0","0","0"],
+                ["0","1","0","1","0","1","0","1","0","1","0","1"],
+                ["0","0","0","0","0","0","0","0","0","0","0","0"],
+                ["0","0","1","0","1","0","1","0","1","0","1","0"],
+                ["0","0","0","0","0","0","0","0","0","0","0","0"],
+                ["0","1","0","1","0","1","0","1","0","1","0","1"],
+                ["0","0","0","0","0","0","0","0","0","0","0","0"],
+                ["0","0","1","0","1","0","1","0","1","0","1","0"],
+            ]
+            this.bricks = buildBricksFromPattern(pattern, colors);
         }
 
         
@@ -84,7 +160,7 @@ export class Breakout {
         this.ball = null;
         Collider.allInstances = [this.paddle];
 
-        this.ball = new Ball(this.canvas.width / 2, this.canvas.height / 2);
+        this.ball = new Ball(this.canvas.width / 2, this.canvas.height / 2 + this.canvas.height / 4);
 
         this.buildBricks();
     }
@@ -106,7 +182,7 @@ export class Breakout {
                 }, 5000);
             }
             else {
-                this.ball = new Ball(this.canvas.width / 2, this.canvas.height / 2);
+                this.ball = new Ball(this.canvas.width / 2, this.canvas.height / 2 + this.canvas.height / 4);
             }
         }
     }

@@ -37,9 +37,13 @@ export class Ball {
         if (inPlay) {
 
             // checks collision against game borders
-            if (this.x - this.radius <= 0 || this.x + this.radius >= canvas.width) {
+            if (this.x - this.radius <= 0) {
                 playAudio("./assets/audio/bounce.flac");
-                this.dX = this.dX * -1;
+                this.dX = Math.abs(this.dX);
+            }
+            if (this.x + this.radius >= canvas.width) {
+                playAudio("./assets/audio/bounce.flac");
+                this.dX = Math.abs(this.dX) * -1;
             }
             if (this.y - this.radius <= 0) {
                 playAudio("./assets/audio/bounce.flac");
@@ -94,15 +98,17 @@ export class Ball {
                     else if (c instanceof Paddle) {
                         // console.log(this.dX, this.dY);
                         playAudio("./assets/audio/bounce.flac");
-                        const paddleXReflexThreshold = c.width / 7;
+                        const paddleXReflexThreshold = c.width / 5;
                         // -------
                         // -|-|---|-|-
 
                         // (-)|-|---|-|-
                         if (this.x + this.dX < c.x + paddleXReflexThreshold) {
+                            // -->
                             if (this.dX > 0) {
                                 this.dX = -2;
                             }
+                            // <--
                             else {
                                 this.dX = -2.5;
                             }
@@ -165,7 +171,7 @@ export class Brick extends Collider {
     powerUpDrop() {
         const r = Math.random();
         // 15% chance of spawning power up
-        if (r > 0.85) {
+        if (r > 0.9) {
             if (PowerUp.allInstances) {
                 PowerUp.allInstances.push(new PowerUp(this.x + (this.width / 2), this.y));
             }
