@@ -127,7 +127,7 @@ export class Breakout {
             ]
             this.bricks = buildBricksFromPattern(pattern, colors);
         }
-        else if (this.level === 4) {
+        else if (this.level === 5) {
             const pattern = [
                 ["1","1","1","0","0","1","1","0","0","1","1","1"],
                 ["1","1","0","0","1","1","1","1","0","0","1","1"],
